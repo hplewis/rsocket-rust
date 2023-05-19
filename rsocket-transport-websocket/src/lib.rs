@@ -7,7 +7,7 @@ mod client;
 mod connection;
 mod server;
 
-pub use client::{WebsocketClientTransport, WebsocketRequest};
+pub use client::{WebsocketClientTransport, WebsocketRequest, IntoWebsocketClientRequest};
 pub use server::WebsocketServerTransport;
 
 #[cfg(test)]

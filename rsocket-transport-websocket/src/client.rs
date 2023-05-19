@@ -1,8 +1,10 @@
+// #![feature(trait_alias)]
 use std::net::SocketAddr;
 
 use rsocket_rust::{async_trait, error::RSocketError, transport::Transport, Result};
 use tokio::net::TcpStream;
 use tokio_tungstenite::{accept_async, connect_async, tungstenite::handshake::client::Request, MaybeTlsStream};
+use tokio_tungstenite::tungstenite::client::IntoClientRequest;
 use url::Url;
 
 use super::connection::WebsocketConnection;
@@ -11,6 +13,15 @@ pub type WebsocketRequest = Request;
 
 const WS_PROTO: &str = "ws://";
 const WSS_PROTO: &str = "wss://";
+// pub trait IntoWebsocketClientRequest = IntoClientRequest;
+pub trait IntoWebsocketClientRequest: IntoClientRequest {
+    fn into_client_request(self) -> tokio_tungstenite::tungstenite::Result<Request>;
+}
+impl<T> IntoWebsocketClientRequest for T where T: IntoClientRequest {
+    fn into_client_request(self) -> tokio_tungstenite::tungstenite::Result<Request> {
+        self.into_client_request()
+    }
+}
 
 #[derive(Debug)]
 pub(crate) enum Connector {
